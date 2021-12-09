@@ -12,7 +12,13 @@ data AForm(loc src = |tmp:///|)
   ; 
 
 data AQuestion(loc src = |tmp:///|)
-  ; 
+  = question(ANormalQuestion question)
+  | question(AComptedQuestion question)
+  | question(AIfThen ifThen)
+  | question(AIfThenElse ifThenElse)
+  ;
+  
+
 
 data AExpr(loc src = |tmp:///|)
   = ref(AId id)
