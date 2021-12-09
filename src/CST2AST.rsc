@@ -19,7 +19,11 @@ import Boolean;
 
 AForm cst2ast(start[Form] sf) {
   Form f = sf.top; // remove layout before and after form
-  return form("", [], src=f@\loc);
+  return cst2ast(f);
+}
+
+AForm cst2ast(f:(Form)`form <Id name> { <Question* qs> }`) {
+  return form(id("<name>", src=name@\loc), [ cst2ast(q) | Question q <- qs ], src=f@\loc);
 }
 
 // Question -> NormalQuestion
@@ -43,7 +47,7 @@ AQuestion cst2ast(q:(Question)`<IfThenElse ifte>`) {
 }
 
 // NormalQuestion -> Str Id ":" Type
-ANormalQuestion cst2ast(nq:(NormalQuestion)`"<Str label>" <Id qid> : <Type typee>`) {
+ANormalQuestion cst2ast(nq:(NormalQuestion)`<Str label> <Id qid> : <Type typee>`) {
   return normalQuestion(cst2ast(label), id("<qid>", src=qid@\loc), cst2ast(typee), src=nq@\loc);
 }
 
@@ -67,13 +71,13 @@ AIfThenElse cst2ast(ifte:(IfThenElse)`<IfThen ift> else <Block bl>`) {
   return ifThenElse(cst2ast(ift), cst2ast(bl), src=ifte@\loc);
 }
 
-
-
+// Expr -> ...
 AExpr cst2ast(Expr e) {
   switch (e) {
     case (Expr)`<Id x>`: return ref(id("<x>", src=x@\loc), src=x@\loc);
     case (Expr)`<Int val>`: return eint(cst2ast(val), src=val@\loc);
     case (Expr)`<Bool val>`: return ebool(cst2ast(val), src=val@\loc);
+    case e:(Expr)`(<Expr expr>)`: return cst2ast(expr);
     case e:(Expr)`!<Expr expr>`: return not(cst2ast(expr), src=e@\loc);
     case e:(Expr)`<Expr lhs> * <Expr rhs>`: return mul(cst2ast(lhs), cst2ast(rhs), src=e@\loc);
     case e:(Expr)`<Expr lhs> / <Expr rhs>`: return div(cst2ast(lhs), cst2ast(rhs), src=e@\loc);
@@ -91,6 +95,10 @@ AExpr cst2ast(Expr e) {
   }
 }
 
+AType cst2ast(Type t) {
+  return typee("<t>", src=t@\loc);
+}
+
 // Lexical: Str -> str
 str cst2ast(Str s) {
   return "<s>";
@@ -98,13 +106,10 @@ str cst2ast(Str s) {
 
 // Lexical: Int -> int
 int cst2ast(Int val) {
-  return toInt(val);
+  return toInt("<val>");
 }
 
+// Lexical: Bool -> bool
 bool cst2ast(Bool val) {
-  return fromString(val);
-}
-
-AType cst2ast(Type t) {
-  throw "Not yet implemented";
+  return fromString("<val>");
 }

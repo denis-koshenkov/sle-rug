@@ -8,12 +8,12 @@ module AST
  */
 
 data AForm(loc src = |tmp:///|)
-  = form(str name, list[AQuestion] questions)
+  = form(AId name, list[AQuestion] questions)
   ; 
 
 data AQuestion(loc src = |tmp:///|)
-  = qnormal(ANormalQuestion question)
-  | qcomputed(AComputedQuestion question)
+  = qnormal(ANormalQuestion nquestion)
+  | qcomputed(AComputedQuestion cquestion)
   | qIfThen(AIfThen ifThen)
   | qIfThenElse(AIfThenElse ifThenElse)
   ;
@@ -40,8 +40,8 @@ data AIfThenElse(loc src = |tmp:///|)
 
 data AExpr(loc src = |tmp:///|)
   = ref(AId id)
-  | eint(int val)
-  | ebool(bool val)
+  | eint(int intVal)
+  | ebool(bool boolVal)
   | not(AExpr expr)
   | mul(AExpr lhs, AExpr rhs)
   | div(AExpr lhs, AExpr rhs)
