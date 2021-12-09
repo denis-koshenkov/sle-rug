@@ -78,6 +78,3 @@ lexical Bool
   = "true"
   | "false"
   ;
-
-
-
