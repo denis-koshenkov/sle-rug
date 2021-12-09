@@ -19,7 +19,7 @@ data AQuestion(loc src = |tmp:///|)
   ;
   
 data ANormalQuestion(loc src = |tmp:///|)
-  = normalQuestion(str label, AId id, AType type)
+  = normalQuestion(str label, AId id, AType typee)
   ;
   
 data AComputedQuestion(loc src = |tmp:///|)
@@ -36,6 +36,7 @@ data AIfThen(loc src = |tmp:///|)
   
 data AIfThenElse(loc src = |tmp:///|)
   = ifThenElse(AIfThen ifThen, ABlock block)
+  ;
 
 data AExpr(loc src = |tmp:///|)
   = ref(AId id)
@@ -60,4 +61,4 @@ data AId(loc src = |tmp:///|)
   = id(str name);
 
 data AType(loc src = |tmp:///|)
-  = type(str type);
+  = typee(str typee);
