@@ -22,7 +22,7 @@ syntax NormalQuestion
   = Str Id ":" Type;
   
 syntax ComputedQuestion
-  = NormalQuestion "=" "(" Expr ")";
+  = NormalQuestion "=" Expr;
   
 syntax Block
   = "{" Question* "}";
@@ -38,18 +38,24 @@ syntax IfThenElse
 // and use C/Java style precedence rules (look it up on the internet)
 syntax Expr 
   = Id \ "true" \ "false" // true/false are reserved keywords.
+  | Int
+  | Bool
   | bracket "(" Expr ")"
   | right "!" Expr
-  > left Expr "*" Expr
-  | left Expr "/" Expr
-  > left Expr "+" Expr
-  | left Expr "-" Expr
-  > left Expr "\>" Expr
-  | left Expr "\<" Expr
-  | left Expr "\<=" Expr
-  | left Expr "\>=" Expr
-  > left Expr "==" Expr
-  | left Expr "!=" Expr
+  > left ( left Expr "*" Expr 
+  		 | left Expr "/" Expr
+  		 )
+  > left ( left Expr "+" Expr
+  		 | left Expr "-" Expr
+  		 )
+  > left ( left Expr "\>" Expr
+  		 | left Expr "\<" Expr
+         | left Expr "\<=" Expr
+         | left Expr "\>=" Expr
+         )
+  > left ( left Expr "==" Expr
+         | left Expr "!=" Expr
+         )
   > left Expr "&&" Expr
   > left Expr "||" Expr
   ;
@@ -61,7 +67,7 @@ syntax Type
   ;
   
 lexical Str
-  = "\"" [^\"]* "\"";
+  = "\"" ![\"]* "\"";
 
 lexical Int 
   = "0"
