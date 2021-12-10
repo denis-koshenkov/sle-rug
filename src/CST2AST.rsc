@@ -22,28 +22,20 @@ AForm cst2ast(start[Form] sf) {
   return cst2ast(f);
 }
 
+// Form -> "form" Id "{" Question* "}"
 AForm cst2ast(f:(Form)`form <Id name> { <Question* qs> }`) {
   return form(id("<name>", src=name@\loc), [ cst2ast(q) | Question q <- qs ], src=f@\loc);
 }
 
-// Question -> NormalQuestion
-AQuestion cst2ast(q:(Question)`<NormalQuestion nq>`) {
-  return qnormal(cst2ast(nq), src=q@\loc);
-}
-
-// Question -> ComputedQuestion
-AQuestion cst2ast(q:(Question)`<ComputedQuestion cq>`) {
-  return qcomputed(cst2ast(cq), src=cq@\loc);
-}
-
-// Question -> IfThen
-AQuestion cst2ast(q:(Question)`<IfThen ift>`) {
-  return qIfThen(cst2ast(ift), src=ift@\loc);
-}
-
-// Question -> IfThenElse
-AQuestion cst2ast(q:(Question)`<IfThenElse ifte>`) {
-  return qIfThenElse(cst2ast(ifte), src=ifte@\loc);
+// Question -> ...
+AQuestion cst2ast(Question q) {
+  switch(q) {
+    case q:(Question)`<NormalQuestion nq>`: return qnormal(cst2ast(nq), src=q@\loc);
+    case q:(Question)`<ComputedQuestion cq>`: return qcomputed(cst2ast(cq), src=q@\loc);
+    case q:(Question)`<IfThen ift>`: return qIfThen(cst2ast(ift), src=q@\loc);
+    case q:(Question)`<IfThenElse ifte>`: return qIfThenElse(cst2ast(ifte), src=q@\loc);
+    default: throw "Unhandled question: <q>";
+  }
 }
 
 // NormalQuestion -> Str Id ":" Type
@@ -74,9 +66,9 @@ AIfThenElse cst2ast(ifte:(IfThenElse)`<IfThen ift> else <Block bl>`) {
 // Expr -> ...
 AExpr cst2ast(Expr e) {
   switch (e) {
-    case (Expr)`<Id x>`: return ref(id("<x>", src=x@\loc), src=x@\loc);
-    case (Expr)`<Int val>`: return eint(cst2ast(val), src=val@\loc);
-    case (Expr)`<Bool val>`: return ebool(cst2ast(val), src=val@\loc);
+    case e:(Expr)`<Id x>`: return ref(id("<x>", src=x@\loc), src=e@\loc);
+    case e:(Expr)`<Int val>`: return eint(cst2ast(val), src=e@\loc);
+    case e:(Expr)`<Bool val>`: return ebool(cst2ast(val), src=e@\loc);
     case e:(Expr)`(<Expr expr>)`: return cst2ast(expr);
     case e:(Expr)`!<Expr expr>`: return not(cst2ast(expr), src=e@\loc);
     case e:(Expr)`<Expr lhs> * <Expr rhs>`: return mul(cst2ast(lhs), cst2ast(rhs), src=e@\loc);
@@ -95,6 +87,7 @@ AExpr cst2ast(Expr e) {
   }
 }
 
+// Type -> "boolean" | "integer" | "string"
 AType cst2ast(Type t) {
   return typee("<t>", src=t@\loc);
 }
