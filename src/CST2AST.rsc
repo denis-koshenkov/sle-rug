@@ -89,7 +89,7 @@ AExpr cst2ast(Expr e) {
 
 // Type -> "boolean" | "integer" | "string"
 AType cst2ast(Type t) {
-  return typee("<t>", src=t@\loc);
+  return \type("<t>", src=t@\loc);
 }
 
 // Lexical: Str -> str

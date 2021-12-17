@@ -19,7 +19,7 @@ data AQuestion(loc src = |tmp:///|)
   ;
   
 data ANormalQuestion(loc src = |tmp:///|)
-  = normalQuestion(str label, AId id, AType typee)
+  = normalQuestion(str label, AId id, AType \type)
   ;
   
 data AComputedQuestion(loc src = |tmp:///|)
@@ -61,4 +61,4 @@ data AId(loc src = |tmp:///|)
   = id(str name);
 
 data AType(loc src = |tmp:///|)
-  = typee(str typee);
+  = \type(str typeName);

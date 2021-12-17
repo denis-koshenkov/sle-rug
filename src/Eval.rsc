@@ -3,6 +3,8 @@ module Eval
 import AST;
 import Resolve;
 
+import IO;
+
 /*
  * Implement big-step semantics for QL
  */
@@ -27,7 +29,15 @@ data Input
 // produce an environment which for each question has a default value
 // (e.g. 0 for int, "" for str etc.)
 VEnv initialEnv(AForm f) {
-  return ();
+  VEnv venv = ();
+  for (/ANormalQuestion q := f) {
+    switch (q.\type.typeName) {
+      case "boolean": venv += (q.id.name : vbool(false));
+      case "integer": venv += (q.id.name : vint(0));
+      case "string": venv += (q.id.name : vstr(""));
+    }
+  }
+  return venv;
 }
 
 
@@ -40,13 +50,56 @@ VEnv eval(AForm f, Input inp, VEnv venv) {
 }
 
 VEnv evalOnce(AForm f, Input inp, VEnv venv) {
-  return (); 
+  for (q <- f.questions) {
+    venv = eval(q, inp, venv);
+  }
+  return venv; 
 }
 
+// evaluate conditions for branching,
+// evaluate inp and computed questions to return updated VEnv
 VEnv eval(AQuestion q, Input inp, VEnv venv) {
-  // evaluate conditions for branching,
-  // evaluate inp and computed questions to return updated VEnv
-  return (); 
+  switch (q) {
+    case qnormal(nq): {
+      // Update this question if inp updates it
+      if (nq.id.name == inp.question) {
+        venv[nq.id.name] = inp.\value;
+        print("Updated: ");
+        print(nq.id.name);
+        print(" to ");
+        println(inp.\value);
+      }
+    }
+    
+    case qcomputed(cq): {
+      // Evaluate the expression of the computed question
+      venv[cq.nq.id.name] = eval(cq.expr, venv);
+    }
+    
+    case qIfThen(ifThen): {
+      // If the condition is true, evaluate all questions in the block
+      if (eval(ifThen.expr, venv) == vbool(true)) {
+        for (nestedQ <- ifThen.block.questions) {
+          eval(nestedQ, inp, venv);
+        }
+      }
+    }
+    
+    case qIfThenElse(ifThenElse): {
+      if (eval(ifThenElse.ifThen.expr, venv) == vbool(true)) {
+        // Evaluate questions in the "if" block if the condition is true
+        for (nestedQ <- ifThenElse.ifThen.block.questions) {
+          eval(nestedQ, inp, venv);
+        }
+      } else {
+      // Evaluate questions in the "else" block if the condition is false
+        for (nestedQ <- ifThenElse.block.questions) {
+          eval(nestedQ, inp, venv);
+        }
+      }
+    }
+  }
+  return venv; 
 }
 
 Value eval(AExpr e, VEnv venv) {
