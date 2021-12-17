@@ -9,7 +9,10 @@ form taxOfficeExample {
       privateDebt: integer
     "Value residue:"
       valueResidue: integer = 
-        ((sellingPrice - privateDebt) * 2)
+        ((sellingPrice - myVar) * 2)
+  } else {
+    "Why is there another question"
+      myVar: integer
   }
 }
   
