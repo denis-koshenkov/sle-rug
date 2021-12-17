@@ -99,6 +99,8 @@ set[Message] check(ANormalQuestion nq, TEnv tenv, UseDef useDef) {
 // Check operand compatibility with operators.
 // E.g. for an addition node add(lhs, rhs), 
 //   the requirement is that typeOf(lhs) == typeOf(rhs) == tint()
+
+// TODO: REVISIT THIS AND ADD SUPPORT FOR E.G. STRING OPERANDS FOR "=="
 set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
   set[Message] msgs = {};
   switch (e) {
