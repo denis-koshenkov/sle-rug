@@ -102,6 +102,7 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
   return venv; 
 }
 
+// TODO: SUPPORT OPERANDS OF DIFFERENT TYPES FOR TYPES SUCH AS "==", "!=", ">=" etc
 Value eval(AExpr e, VEnv venv) {
   switch (e) {
     case ref(id(str x)): return venv[x];
