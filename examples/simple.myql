@@ -20,6 +20,6 @@ form taxOfficeExample {
        hasSoldHouse: boolean
     "Did you enter aaaaa loan?"
        sddd: boolean = 
-         (!5 * 3) && (7 + 5) 
+         (true && hasMaintLoan) && (7 + 5) 
   }
 }
