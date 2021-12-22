@@ -226,53 +226,21 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
       }
     case eint(_): return tint();
     case ebool(_): return tbool();
-    case not(nestedExpr): {
-	  if (typeOf(nestedExpr, tenv, useDef) == tbool()) {
-	    return tbool();
-	  } else {
-	    return tunknown();
-	  }
-	}
-    case mul(lhs, rhs): return integerOperandsType(lhs, rhs, tenv, useDef);
-    case div(lhs, rhs): return integerOperandsType(lhs, rhs, tenv, useDef); 
-    case add(lhs, rhs): return integerOperandsType(lhs, rhs, tenv, useDef);
-    case sub(lhs, rhs): return integerOperandsType(lhs, rhs, tenv, useDef);
-    case greater(lhs, rhs): return integerOrStringOperandsType(lhs, rhs, tenv, useDef);
-    case less(lhs, rhs): return integerOrStringOperandsType(lhs, rhs, tenv, useDef);
-    case leq(lhs, rhs): return integerOrStringOperandsType(lhs, rhs, tenv, useDef);
-    case geq(lhs, rhs): return integerOrStringOperandsType(lhs, rhs, tenv, useDef);
-    case eq(lhs, rhs): return integerOrStringOperandsType(lhs, rhs, tenv, useDef);
-    case neq(lhs, rhs): return integerOrStringOperandsType(lhs, rhs, tenv, useDef);
-    case and(lhs, rhs): return boolOperandsType(lhs, rhs, tenv, useDef);
-    case or(lhs, rhs): return boolOperandsType(lhs, rhs, tenv, useDef);
+    case not(_): return tbool();
+    case mul(_, _): return tint();
+    case div(_, _): return tint();
+    case add(_, _): return tint();
+    case sub(_, _): return tint();
+    case greater(_, _): return tbool();
+    case less(_, _): return tbool();
+    case leq(_, _): return tbool();
+    case geq(_, _): return tbool();
+    case eq(_, _): return tbool();
+    case neq(_, _): return tbool();
+    case and(_, _): return tbool();
+    case or(_, _): return tbool();
   }
   return tunknown();
-}
-
-Type integerOperandsType(AExpr lhs, AExpr rhs, TEnv tenv, UseDef useDef) {
-  if (typeOf(lhs, tenv, useDef) == tint() && typeOf(rhs, tenv, useDef) == tint()) {
-    return tint();
-  } else {
-    return tunknown();
-  }
-}
-
-Type integerOrStringOperandsType(AExpr lhs, AExpr rhs, TEnv tenv, UseDef useDef) {
-  if (typeOf(lhs, tenv, useDef) == tint() && typeOf(rhs, tenv, useDef) == tint()) {
-    return tbool();
-  } else if (typeOf(lhs, tenv, useDef) == tstr() && typeOf(rhs, tenv, useDef) == tstr()) {
-    return tbool();
-  } else {
-    return tunknown();
-  }
-}
-
-Type boolOperandsType(AExpr lhs, AExpr rhs, TEnv tenv, UseDef useDef) {
-  if (typeOf(lhs, tenv, useDef) == tbool() && typeOf(rhs, tenv, useDef) == tbool()) {
-    return tbool();
-  } else {
-    return tunknown();
-  }
 }
 
 /* 
