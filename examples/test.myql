@@ -35,6 +35,6 @@ form taxOfficeExample {
       
   "Int equality"
     intEq: boolean = 
-      5 == 5
+      (5 >= 5) && ("yes" > "no")
 }
   
