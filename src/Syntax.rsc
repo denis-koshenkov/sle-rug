@@ -19,7 +19,7 @@ syntax Question
   ;
   
 syntax NormalQuestion
-  = Str Id ":" Type;
+  = "\"" Str "\"" Id ":" Type;
   
 syntax ComputedQuestion
   = NormalQuestion "=" Expr;
@@ -40,7 +40,7 @@ syntax Expr
   = Id \ "true" \ "false" // true/false are reserved keywords.
   | Int
   | Bool
-  | Str
+  | "\"" Str "\""
   | bracket "(" Expr ")"
   | right "!" Expr
   > left ( left Expr "*" Expr 
@@ -68,7 +68,7 @@ syntax Type
   ;
   
 lexical Str
-  = "\"" ![\"]* "\"";
+  = ![\"]*;
 
 lexical Int 
   = "0"

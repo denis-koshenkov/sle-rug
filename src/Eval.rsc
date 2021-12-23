@@ -102,25 +102,85 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
   return venv; 
 }
 
-// TODO: SUPPORT OPERANDS OF DIFFERENT TYPES FOR TYPES SUCH AS "==", "!=", ">=" etc
 Value eval(AExpr e, VEnv venv) {
   switch (e) {
     case ref(id(str x)): return venv[x];
     case eint(int intVal): return vint(intVal);
     case ebool(bool boolVal): return vbool(boolVal);
+    case estr(str strVal): return vstr(strVal);
     case not(AExpr nestedExpr): return vbool(!(eval(nestedExpr, venv).b));
     case mul(AExpr lhs, AExpr rhs): return vint(eval(lhs, venv).n * eval(rhs, venv).n);
     case div(AExpr lhs, AExpr rhs): return vint(eval(lhs, venv).n / eval(rhs, venv).n);
     case add(AExpr lhs, AExpr rhs): return vint(eval(lhs, venv).n + eval(rhs, venv).n);
     case sub(AExpr lhs, AExpr rhs): return vint(eval(lhs, venv).n - eval(rhs, venv).n);
-    case greater(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).n > eval(rhs, venv).n);
-    case less(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).n < eval(rhs, venv).n);
-    case leq(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).n <= eval(rhs, venv).n);
-    case geq(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).n >= eval(rhs, venv).n);
-    case eq(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).n == eval(rhs, venv).n);
-    case neq(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).n == eval(rhs, venv).n);
+    case greater(AExpr lhs, AExpr rhs): return resolveIntOrStrOperandsGreater(lhs, rhs, venv);
+    case less(AExpr lhs, AExpr rhs): return resolveIntOrStrOperandsLess(lhs, rhs, venv);
+    case leq(AExpr lhs, AExpr rhs): return resolveIntOrStrOperandsLeq(lhs, rhs, venv);
+    case geq(AExpr lhs, AExpr rhs): return resolveIntOrStrOperandsGeq(lhs, rhs, venv);
+    case equal(AExpr lhs, AExpr rhs): return resolveIntOrStrOperandsEq(lhs, rhs, venv);
+    case neq(AExpr lhs, AExpr rhs): return resolveIntOrStrOperandsNeq(lhs, rhs, venv);
     case and(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).b && eval(rhs, venv).b);
     case or(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).b || eval(rhs, venv).b);
     default: throw "Unsupported expression <e>";
+  }
+}
+
+Value resolveIntOrStrOperandsGreater(AExpr lhs, AExpr rhs, VEnv venv) {
+  Value evalLhs = eval(lhs, venv);
+  Value evalRhs = eval(rhs, venv);
+  switch (evalLhs) {
+    case vint(_): return vbool(evalLhs.n > evalRhs.n);
+    case vstr(_): return vbool(evalLhs.s > evalRhs.s);
+    default: throw "Wrong operands type";
+  }
+}
+
+Value resolveIntOrStrOperandsLess(AExpr lhs, AExpr rhs, VEnv venv) {
+  Value evalLhs = eval(lhs, venv);
+  Value evalRhs = eval(rhs, venv);
+  switch (evalLhs) {
+    case vint(_): return vbool(evalLhs.n < evalRhs.n);
+    case vstr(_): return vbool(evalLhs.s < evalRhs.s);
+    default: throw "Wrong operands type";
+  }
+}
+
+Value resolveIntOrStrOperandsLeq(AExpr lhs, AExpr rhs, VEnv venv) {
+  Value evalLhs = eval(lhs, venv);
+  Value evalRhs = eval(rhs, venv);
+  switch (evalLhs) {
+    case vint(_): return vbool(evalLhs.n <= evalRhs.n);
+    case vstr(_): return vbool(evalLhs.s <= evalRhs.s);
+    default: throw "Wrong operands type";
+  }
+}
+
+Value resolveIntOrStrOperandsGeq(AExpr lhs, AExpr rhs, VEnv venv) {
+  Value evalLhs = eval(lhs, venv);
+  Value evalRhs = eval(rhs, venv);
+  switch (evalLhs) {
+    case vint(_): return vbool(evalLhs.n >= evalRhs.n);
+    case vstr(_): return vbool(evalLhs.s >= evalRhs.s);
+    default: throw "Wrong operands type";
+  }
+}
+
+Value resolveIntOrStrOperandsEq(AExpr lhs, AExpr rhs, VEnv venv) {
+  Value evalLhs = eval(lhs, venv);
+  Value evalRhs = eval(rhs, venv);
+  switch (evalLhs) {
+    case vint(_): return vbool(evalLhs.n == evalRhs.n);
+    case vstr(_): return vbool(evalLhs.s == evalRhs.s);
+    default: throw "Wrong operands type";
+  }
+}
+
+Value resolveIntOrStrOperandsNeq(AExpr lhs, AExpr rhs, VEnv venv) {
+  Value evalLhs = eval(lhs, venv);
+  Value evalRhs = eval(rhs, venv);
+  switch (evalLhs) {
+    case vint(_): return vbool(evalLhs.n != evalRhs.n);
+    case vstr(_): return vbool(evalLhs.s != evalRhs.s);
+    default: throw "Wrong operands type";
   }
 }

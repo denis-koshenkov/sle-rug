@@ -41,7 +41,7 @@ AQuestion cst2ast(Question q) {
 }
 
 // NormalQuestion -> Str Id ":" Type
-ANormalQuestion cst2ast(nq:(NormalQuestion)`<Str label> <Id qid> : <Type typee>`) {
+ANormalQuestion cst2ast(nq:(NormalQuestion)`"<Str label>" <Id qid> : <Type typee>`) {
   return normalQuestion(cst2ast(label), id("<qid>", src=qid@\loc), cst2ast(typee), src=nq@\loc);
 }
 
@@ -71,7 +71,7 @@ AExpr cst2ast(Expr e) {
     case e:(Expr)`<Id x>`: return ref(id("<x>", src=x@\loc), src=e@\loc);
     case e:(Expr)`<Int val>`: return eint(cst2ast(val), src=e@\loc);
     case e:(Expr)`<Bool val>`: return ebool(cst2ast(val), src=e@\loc);
-    case e:(Expr)`<Str val>`: return estr(cst2ast(val), src=e@\loc);
+    case e:(Expr)`"<Str val>"`: return estr(cst2ast(val), src=e@\loc);
     case e:(Expr)`(<Expr expr>)`: return cst2ast(expr);
     case e:(Expr)`!<Expr expr>`: return not(cst2ast(expr), src=e@\loc);
     case e:(Expr)`<Expr lhs> * <Expr rhs>`: return mul(cst2ast(lhs), cst2ast(rhs), src=e@\loc);

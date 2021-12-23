@@ -30,7 +30,7 @@ alias TEnv = rel[loc def, str name, str label, Type \type];
 TEnv collect(AForm f) {
   tenv = {};
   for (/ANormalQuestion nq := f) {
-    tenv += { <nq.src, nq.id.name, nq.label, atypeToType(nq.\type)> };
+    tenv += { <nq.id.src, nq.id.name, nq.label, atypeToType(nq.\type)> };
   }
   return tenv;
 }
