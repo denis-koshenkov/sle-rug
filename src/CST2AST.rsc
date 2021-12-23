@@ -7,6 +7,8 @@ import ParseTree;
 import String;
 import Boolean;
 
+import IO;
+
 /*
  * Implement a mapping from concrete syntax trees (CSTs) to abstract syntax trees (ASTs)
  *
@@ -69,6 +71,7 @@ AExpr cst2ast(Expr e) {
     case e:(Expr)`<Id x>`: return ref(id("<x>", src=x@\loc), src=e@\loc);
     case e:(Expr)`<Int val>`: return eint(cst2ast(val), src=e@\loc);
     case e:(Expr)`<Bool val>`: return ebool(cst2ast(val), src=e@\loc);
+    case e:(Expr)`<Str val>`: return estr(cst2ast(val), src=e@\loc);
     case e:(Expr)`(<Expr expr>)`: return cst2ast(expr);
     case e:(Expr)`!<Expr expr>`: return not(cst2ast(expr), src=e@\loc);
     case e:(Expr)`<Expr lhs> * <Expr rhs>`: return mul(cst2ast(lhs), cst2ast(rhs), src=e@\loc);
@@ -79,7 +82,7 @@ AExpr cst2ast(Expr e) {
     case e:(Expr)`<Expr lhs> \< <Expr rhs>`: return less(cst2ast(lhs), cst2ast(rhs), src=e@\loc);
     case e:(Expr)`<Expr lhs> \<= <Expr rhs>`: return leq(cst2ast(lhs), cst2ast(rhs), src=e@\loc);
     case e:(Expr)`<Expr lhs> \>= <Expr rhs>`: return geq(cst2ast(lhs), cst2ast(rhs), src=e@\loc);
-    case e:(Expr)`<Expr lhs> == <Expr rhs>`: return eq(cst2ast(lhs), cst2ast(rhs), src=e@\loc);
+    case e:(Expr)`<Expr lhs> == <Expr rhs>`: return equal(cst2ast(lhs), cst2ast(rhs), src=e@\loc);
     case e:(Expr)`<Expr lhs> != <Expr rhs>`: return neq(cst2ast(lhs), cst2ast(rhs), src=e@\loc);
     case e:(Expr)`<Expr lhs> && <Expr rhs>`: return and(cst2ast(lhs), cst2ast(rhs), src=e@\loc);
     case e:(Expr)`<Expr lhs> || <Expr rhs>`: return or(cst2ast(lhs), cst2ast(rhs), src=e@\loc);

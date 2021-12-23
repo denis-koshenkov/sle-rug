@@ -40,6 +40,7 @@ syntax Expr
   = Id \ "true" \ "false" // true/false are reserved keywords.
   | Int
   | Bool
+  | Str
   | bracket "(" Expr ")"
   | right "!" Expr
   > left ( left Expr "*" Expr 

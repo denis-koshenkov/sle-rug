@@ -2,17 +2,22 @@ form taxOfficeExample {
   "Did you buy a house in 2010?"
     hasBoughtHouse: boolean
 
-  if (hasBoughtHouse) {
+  if (true) {
     "What was the selling price?"
       sellingPrice: integer
     "Private debts for the sold house:"
       privateDebt: integer
-    "Why is there another question"
-      valueResidue: integer = 
-        ((sellingPrice - fdfsdfs) == 2)
+    "Why is there another questiondsds"
+      valueResidue: boolean = 
+        false && true
   } else {
+    "Why is there another questiondsds"
+      valueResidueee: integer
+  }
+  
+  if (true && false) {
     "Why is there another question"
-      valueResidue: boolean
+      valueResidssssue: integer
   }
 }
   

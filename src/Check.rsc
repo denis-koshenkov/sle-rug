@@ -30,7 +30,7 @@ alias TEnv = rel[loc def, str name, str label, Type \type];
 TEnv collect(AForm f) {
   tenv = {};
   for (/ANormalQuestion nq := f) {
-    tenv += { <nq.id.src, nq.id.name, nq.label, atypeToType(nq.\type)> };
+    tenv += { <nq.src, nq.id.name, nq.label, atypeToType(nq.\type)> };
   }
   return tenv;
 }
@@ -93,19 +93,16 @@ set[Message] check(ANormalQuestion nq, TEnv tenv) {
     // produce an error if there are declared questions with the same name but different types.
     if ((defQuestion.name == nq.id.name) && (defQuestion.\type != atypeToType(nq.\type))) {
       msgs += { error("Question with this name already exists, but the type is different", nq.id.src) };
-      msgs += { error("Question with this name already exists, but the type is different", defQuestion.def) };
     }
     
     // produce a warning if there are different questions with the same label
     if ((defQuestion.label == nq.label) && (defQuestion.name != nq.id.name)) {
       msgs += { warning("A different question with this label already exists", nq.src) };
-      msgs += { warning("A different question with this label already exists", defQuestion.def) };
     }
     
     // produce a warning if there are different labels for occurrences of the same question
-    if ((defQuestion.label != nq.label) && (defQuestion.name == nq.id.name)) {
-      msgs += { warning("Different labels for the same question", nq.src) };
-      msgs += { warning("Different labels for the same question", defQuestion.def) };
+    if ((defQuestion.label != nq.label) && (defQuestion.name == nq.id.name) && (defQuestion.\type == atypeToType(nq.\type))) {
+      msgs += { warning("Different labels for the same question", nq.id.src) };
     }
   }
   return msgs;
@@ -159,7 +156,7 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
 	case geq(AExpr lhs, AExpr rhs): {
 	  msgs += errMessagesIntOrStrOperands(lhs, rhs, tenv, useDef);
 	}
-	case eq(AExpr lhs, AExpr rhs): {
+	case equal(AExpr lhs, AExpr rhs): {
 	  msgs += errMessagesIntOrStrOperands(lhs, rhs, tenv, useDef);
 	}
 	case neq(AExpr lhs, AExpr rhs): {
@@ -196,11 +193,13 @@ set[Message] errMessagesIntOperands(AExpr lhs, AExpr rhs, TEnv tenv, UseDef useD
 set[Message] errMessagesIntOrStrOperands(AExpr lhs, AExpr rhs, TEnv tenv, UseDef useDef) {
   set[Message] msgs = {};
   if (typeOf(lhs, tenv, useDef) == tint()) {
-    if (typeOf(rhs, tenv, useDef) != tint())
+    if (typeOf(rhs, tenv, useDef) != tint()) {
       msgs += { error("Expected expression type: integer", rhs.src) };
+    }
   } else if (typeOf(lhs, tenv, useDef) == tstr()) {
-    if (typeOf(rhs, tenv, useDef) != tstr())
+    if (typeOf(rhs, tenv, useDef) != tstr()) {
       msgs += { error("Expected expression type: string", rhs.src) };
+    }
   } else {
     // lhs is neither integer nor string
     if (typeOf(rhs, tenv, useDef) == tint()) {
@@ -226,6 +225,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
       }
     case eint(_): return tint();
     case ebool(_): return tbool();
+    case estr(_): return tstr();
     case not(_): return tbool();
     case mul(_, _): return tint();
     case div(_, _): return tint();
@@ -235,7 +235,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     case less(_, _): return tbool();
     case leq(_, _): return tbool();
     case geq(_, _): return tbool();
-    case eq(_, _): return tbool();
+    case equal(_, _): return tbool();
     case neq(_, _): return tbool();
     case and(_, _): return tbool();
     case or(_, _): return tbool();
