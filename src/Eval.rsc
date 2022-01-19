@@ -92,7 +92,7 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
           venv = eval(nestedQ, inp, venv);
         }
       } else {
-      // Evaluate questions in the "else" block if the condition is false
+      	// Evaluate questions in the "else" block if the condition is false
         for (nestedQ <- ifThenElse.block.questions) {
           venv = eval(nestedQ, inp, venv);
         }
