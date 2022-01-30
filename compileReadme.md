@@ -65,7 +65,7 @@ question ID and its default value depending on its type (0, false or "").
 Traverse the AST do the process described above.
 5. Create the "recomputeQuestions" function.
 For each computed question, convert AExpr to JS code that computes the expression.
-Use Math.floor to enforce integer division. Or shouold I?
+Use Math.floor to enforce integer division. Or should I?
 Assign the value to the question if in venv. Don't forget the modifiedValue boolean.
 6. Create the "showUpdatedComputedValues" function.
 For each computed question, create code for updating the value of the HTML node.
