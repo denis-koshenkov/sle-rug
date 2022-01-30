@@ -1,0 +1,16 @@
+form taxOfficeExample {
+  if (false) {
+    "Did you buy a house in 2010?"
+      hasBoughtHouse: boolean
+    
+    if (hasBoughtHouse || true) {
+      "Did you enter a loan?"
+         hasMaintLoan: boolean
+    } else {
+      if (hasMaintLoan && hasBoughtHouse) {
+        "Private debts for the sold house:"
+          privateDebt: integer
+      }
+    }
+  }
+}

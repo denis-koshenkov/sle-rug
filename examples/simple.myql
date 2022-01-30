@@ -18,5 +18,8 @@ form taxOfficeExample {
   if (privateDebt > 0) {
     "Did you sell a house in 2010?"
        hasSoldHouse: boolean
+    "Did you enter aaaaa loan?"
+       sddd: boolean = 
+         (true && hasMaintLoan) && (7 + 5) 
   }
 }

@@ -1,0 +1,40 @@
+form taxOfficeExample { 
+  "Did you buy a house in 2010?"
+    hasBoughtHouse: boolean
+
+  if (hasBoughtHouse) {
+    "Are you a good boy?"
+      goodBoy: boolean
+    "Private debts for the sold house:"
+      privateDebt: integer
+    "Input a random number"
+      randomNumber: integer
+  } else {
+    "Why is there another question?"
+      randomAnswer: integer =
+        randomNumber + privateDebt
+    "Input in the else"
+      elseInput: integer
+  }
+  
+  if (goodBoy) {
+    "This question is only for good boys? Will you be a good boy later?"
+      goodBoyLater: boolean
+    "Input a string"
+      inputStr: string
+  }
+  
+  if (inputStr == "yes") {
+    "Only for 'yes' string"
+      change: integer 
+  }
+  
+  "String is yes"
+    yesString: boolean = 
+      inputStr == "yes"
+      
+  "Int equality"
+    intEq: boolean = 
+      (5 >= 5) && ("yes" > "no")
+}
+  
