@@ -3,6 +3,8 @@ module Transform
 import Syntax;
 import Resolve;
 import AST;
+import CST2AST;
+import ParseTree;
 
 /* 
  * Transforming QL forms
@@ -28,6 +30,7 @@ import AST;
  *
  */
  
+ // Flattens the given form to the format described above.
 AForm flatten(AForm f) {
   return form(f.name, flattenQuestionsList(f.questions, ebool(true)));
 }
@@ -43,6 +46,10 @@ list[AQuestion] flattenQuestionsList(list[AQuestion] questions, AExpr condition)
   return result;
 }
 
+// Flattens a given AQuestion
+// If it is a normal or computed question, simply wraps Ifthen with the given condition around it
+// If it is ifThen/ifThenElse, recursively calls this function on the list of questions in the block(s)
+// with updated condition.
 list[AQuestion] flattenQuestion(AQuestion q, AExpr condition) {
   switch(q) {
     case qnormal(_): {
@@ -70,7 +77,26 @@ list[AQuestion] flattenQuestion(AQuestion q, AExpr condition) {
  */
  
  start[Form] rename(start[Form] f, loc useOrDef, str newName, UseDef useDef) {
-   return f; 
+   set[loc] toRename = {};
+   
+   if (useOrDef in useDef<1>) {
+     // It is a def occurrence
+     toRename += { useOrDef };
+     toRename += { use | <loc use, useOrDef> <- useDef};
+   } else if (useOrDef in useDef<0>) {
+     // It is a use occurrence
+     if (<useOrDef, loc def> <- useDef) {
+       toRename += { use | <loc use, def> <- useDef };
+     }
+   } else {
+     // It is not a use or def occurrence, nothing needs to be renamed
+     return f;
+   }
+ 
+   return visit (f) {
+     case Id x => [Id]newName
+       when x@\loc in toRename
+   }
  } 
  
  
