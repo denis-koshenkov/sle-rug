@@ -107,6 +107,7 @@ str getHTMLInputType(AType \type) {
 
 //-------------------------------------- JS compilation -------------------------------------------------
 
+// Generates JS code for the given form
 str form2js(AForm f) {
   return generateVenvJs(f) + 
   "
@@ -146,6 +147,9 @@ str form2js(AForm f) {
   ;
 }
 
+// Generates JS code for the function ShowUpdatedComputedValues()
+// It modifies HTML nodes of computed question and sets them
+// to their current venv values
 str generateFunctionShowUpdatedComputedValues(AForm f) {
   return "
   'function showUpdatedComputedValues() {
@@ -154,9 +158,8 @@ str generateFunctionShowUpdatedComputedValues(AForm f) {
   ";
 }
 
-// Generates JS code for the function ShowUpdatedComputedValues()
-// It modifies HTML nodes of computed question and sets them
-// to their current venv values
+// Generates JS code to update the HTML nodes
+// of all computed questions
 str generateShowUpdatedComputedValues(AForm f) {
   str res = "";
   for (/AComputedQuestion cq := f) {
@@ -165,6 +168,8 @@ str generateShowUpdatedComputedValues(AForm f) {
   return res;
 }
 
+// Generates JS code to update the HTML node of a computed question
+// according to its value in the venv
 str genShowUpdatedComputedQuestion(AComputedQuestion cq) {
   return "document.getElementById(\"<cq.nq.id.name>\").value = venv[\"<cq.nq.id.name>\"];\n";
 }
@@ -206,6 +211,8 @@ str generateFunctionShowHideQuestions(AForm f) {
   ";
 }
 
+// Given a list of abstract questions, shows or hides them 
+// (and all of their potential nested questions, according to the boolean "show"
 str generateShowHideQuestions(list[AQuestion] questions, bool show) {
   str res = "";
   for (AQuestion q <- questions) { 
@@ -214,6 +221,8 @@ str generateShowHideQuestions(list[AQuestion] questions, bool show) {
   return res;
 }
 
+// Given an abstract question, shows or hides it (and all its potential nested questions)
+// according to the boolean "show"
 str generateShowHideQuestion(AQuestion q, bool show) {
   switch(q) {
     case qnormal(nq): {
